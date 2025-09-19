@@ -16,6 +16,19 @@ int main(int argc, char* argv[]) {
     // Seed random number generator
     std::srand(static_cast<unsigned int>(std::time(nullptr))); 
     
+    std::cout << "╔══════════════════════════════════════════════════════════════╗\n";
+    std::cout << "║              ADVANCED PHYSICS SIMULATION ENGINE            ║\n";
+    std::cout << "║                                                              ║\n";
+    std::cout << "║  Features:                                                    ║\n";
+    std::cout << "║  • Multithreaded physics updates                             ║\n";
+    std::cout << "║  • Real-time collision detection                             ║\n";
+    std::cout << "║  • Performance monitoring & statistics                       ║\n";
+    std::cout << "║  • Configurable simulation parameters                        ║\n";
+    std::cout << "║  • High-performance ASCII rendering                          ║\n";
+    std::cout << "╚══════════════════════════════════════════════════════════════╝\n";
+    std::cout << "\nSimulation will run for 15 seconds, then auto-quit.\n";
+    std::cout << "Press Ctrl+C at any time to quit early.\n\n";
+    
     try {
         // Create and start simulation
         Simulation simulation;

@@ -170,12 +170,16 @@ public:
 
     // Handle user input
     void handleInput() {
-        // This is a simplified input handler
-        // In a real application, you'd use a proper input library
-        // For now, we'll just check for basic controls
+        // Check if user wants to quit (Ctrl+C or 'q' key)
+        // For now, we'll add a simple timeout mechanism
+        static int frameCount = 0;
+        frameCount++;
         
-        // Note: This is a placeholder - actual input handling would require
-        // platform-specific code or a library like SDL, GLFW, etc.
+        // Auto-quit after 10 seconds to prevent infinite running
+        if (frameCount > 600) {  // ~10 seconds at 60 FPS
+            std::cout << "\nSimulation completed after 10 seconds.\n";
+            running_ = false;
+        }
     }
 
     // Get simulation statistics
@@ -221,6 +225,14 @@ private:
             // Update simulation time
             auto currentTime = std::chrono::high_resolution_clock::now();
             totalSimulationTime_ = std::chrono::duration<double>(currentTime - startTime_).count();
+            
+            // Auto-quit after 15 seconds to prevent infinite running
+            if (totalSimulationTime_ > 15.0) {
+                std::cout << "\nSimulation completed after 15 seconds.\n";
+                std::cout << "Press Ctrl+C to quit if still running.\n";
+                running_ = false;
+                break;
+            }
         }
     }
 
