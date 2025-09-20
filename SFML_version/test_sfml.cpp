@@ -1,119 +1,115 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "Particle.h"
+#include <cstdint>
 #include <optional>
+#include "ParticleManager.h" 
 
 int main()
 {
-    std::cout << "Testing SFML 3.x with bouncing particle...\n";
+    std::cout << "Starting Multi-Particle Physics Simulation...\n";
 
-    // SFML 3.x syntax - VideoMode constructor
+    // Window constants
     const int WINDOW_WIDTH = 800;
     const int WINDOW_HEIGHT = 600;
-    sf::RenderWindow window(sf::VideoMode(sf::Vector2u(WINDOW_WIDTH, WINDOW_HEIGHT)), "Bouncing Particle");
+    
+    // Create SFML window
+    sf::RenderWindow window(sf::VideoMode(sf::Vector2u(WINDOW_WIDTH, WINDOW_HEIGHT)), 
+                           "Multi-Particle Physics Simulation");
     window.setFramerateLimit(60);
 
-    // Create a particle
-    Particle particle(
-        100.0,    // x position
-        100.0,    // y position
-        150.0,    // x velocity (pixels per second)
-        200.0,    // y velocity
-        1.0,      // mass
-        20.0      // radius
-    );
+    // Create particle manager
+    ParticleManager particleManager(WINDOW_WIDTH, WINDOW_HEIGHT, 0.9);  // 0.9 = damping factor
 
-    // Create SFML circle to render the particle
-    sf::CircleShape circle(static_cast<float>(particle.getRadius()));
-    circle.setFillColor(sf::Color::Green);
-    circle.setOutlineThickness(2.0f);
-    circle.setOutlineColor(sf::Color::White);
-    // Set origin to center of circle for proper positioning
-    circle.setOrigin(sf::Vector2f(circle.getRadius(), circle.getRadius()));
-
-    // For timing
+    // Create some initial particles
+    std::cout << "Creating initial particles...\n";
+    
+    // Method 1: Create specific particles
+    particleManager.createParticle(100, 100, 150, 200, 1.0, 15.0);  // Large fast particle
+    particleManager.createParticle(300, 200, -100, 150, 0.5, 8.0);  // Small fast particle
+    particleManager.createParticle(500, 300, 75, -120, 1.5, 20.0);  // Heavy slow particle
+    
+    // Method 2: Create random particles
+    particleManager.createMultipleRandomParticles(7);  // Add 7 random particles
+    
+    std::cout << "Total particles: " << particleManager.getParticleCount() << "\n";
+    
+    // Game state
+    bool showInstructions = true;
     sf::Clock clock;
-
-    std::cout << "Particle created! Watch it bounce around.\n";
-    std::cout << "Press ESC or close window to exit.\n";
+    
+    // Display controls
+    std::cout << "\n=== CONTROLS ===\n";
+    std::cout << "ESC - Quit\n";
+    std::cout << "R - Add random particle\n";
+    std::cout << "C - Clear all particles\n";
+    std::cout << "SPACE - Add 5 random particles\n";
+    std::cout << "================\n\n";
 
     // Main game loop
     while (window.isOpen())
     {
-        // Get delta time (time since last frame)
         float deltaTime = clock.restart().asSeconds();
 
-        // SFML 3.x event handling - returns std::optional<Event>
+        // Event handling
         while (std::optional<sf::Event> event = window.pollEvent())
         {
-            // Check event types using is<> template
             if (event->is<sf::Event::Closed>())
             {
                 window.close();
             }
 
-            // Check for ESC key press
             if (event->is<sf::Event::KeyPressed>())
             {
-                const auto &keyEvent = event->getIf<sf::Event::KeyPressed>();
-                if (keyEvent && keyEvent->code == sf::Keyboard::Key::Escape)
-                {
-                    window.close();
+                const auto& keyEvent = event->getIf<sf::Event::KeyPressed>();
+                if (keyEvent) {
+                    switch (keyEvent->code) {
+                        case sf::Keyboard::Key::Escape:
+                            std::cout << "Exiting simulation...\n";
+                            window.close();
+                            break;
+                            
+                        case sf::Keyboard::Key::R:
+                            particleManager.createRandomParticle();
+                            std::cout << "Added random particle. Total: " 
+                                     << particleManager.getParticleCount() << "\n";
+                            break;
+                            
+                        case sf::Keyboard::Key::C:
+                            particleManager.clear();
+                            std::cout << "Cleared all particles\n";
+                            break;
+                            
+                        case sf::Keyboard::Key::Space:
+                            particleManager.createMultipleRandomParticles(5);
+                            std::cout << "Added 5 particles. Total: " 
+                                     << particleManager.getParticleCount() << "\n";
+                            break;
+                            
+                        default:
+                            // Do nothing for other keys
+                            break;
+                    }
                 }
             }
         }
 
-        // Update particle physics
-        particle.update(deltaTime);
-
-        // Handle boundary collisions (bouncing)
-        double x = particle.getX();
-        double y = particle.getY();
-        double vx = particle.getVX();
-        double vy = particle.getVY();
-        double radius = particle.getRadius();
-
-        // Bounce off left/right walls
-        if (x - radius < 0) {
-            particle.setPosition(radius, y);
-            particle.setVelocity(-vx * 0.9, vy);  // 0.9 = damping factor
-            std::cout << "Bounced off left wall!\n";
-        } 
-        else if (x + radius > WINDOW_WIDTH) {
-            particle.setPosition(WINDOW_WIDTH - radius, y);
-            particle.setVelocity(-vx * 0.9, vy);
-            std::cout << "Bounced off right wall!\n";
-        }
-
-        // Bounce off top/bottom walls
-        if (y - radius < 0) {
-            particle.setPosition(x, radius);
-            particle.setVelocity(vx, -vy * 0.9);
-            std::cout << "Bounced off top wall!\n";
-        } 
-        else if (y + radius > WINDOW_HEIGHT) {
-            particle.setPosition(x, WINDOW_HEIGHT - radius);
-            particle.setVelocity(vx, -vy * 0.9);
-            std::cout << "Bounced off bottom wall!\n";
-        }
-
-        // Update circle position for rendering (SFML 3.x uses sf::Vector2f)
-        circle.setPosition(sf::Vector2f(
-            static_cast<float>(particle.getX()), 
-            static_cast<float>(particle.getY())
-        ));
-
-        // Change color based on speed for visual feedback
-        double speed = particle.getSpeed();
-        std::uint8_t intensity = static_cast<std::uint8_t>(std::min(255.0, speed));
-        circle.setFillColor(sf::Color(intensity, static_cast<std::uint8_t>(255 - intensity/2), 100, 200));
+        // Update physics
+        particleManager.update(deltaTime);
 
         // Render everything
         window.clear(sf::Color::Black);
-        window.draw(circle);
+        particleManager.render(window);
         window.display();
+
+        // Optional: Print particle count every few seconds (for debugging)
+        static sf::Clock printClock;
+        if (printClock.getElapsedTime().asSeconds() > 5.0f) {
+            std::cout << "Active particles: " << particleManager.getParticleCount() << "\n";
+            printClock.restart();
+        }
     }
 
-    std::cout << "Particle simulation completed!\n";
+    std::cout << "Simulation ended. Final particle count: " 
+              << particleManager.getParticleCount() << "\n";
     return 0;
 }
