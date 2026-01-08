@@ -1,0 +1,3 @@
+/Users/goshak24/Documents/GitHub/Physics Multithreaded Simulation/build/CMakeFiles/simulation.dir
+/Users/goshak24/Documents/GitHub/Physics Multithreaded Simulation/build/CMakeFiles/edit_cache.dir
+/Users/goshak24/Documents/GitHub/Physics Multithreaded Simulation/build/CMakeFiles/rebuild_cache.dir
