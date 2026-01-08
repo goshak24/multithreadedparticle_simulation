@@ -80,11 +80,11 @@ public:
         }
         
         // Add some fixed particles for testing
-        auto particle1 = std::make_unique<Particle>(10.0, 10.0, 0.1, 0.1, 1.0, 0.5);
-        auto particle2 = std::make_unique<Particle>(20.0, 15.0, -0.1, 0.1, 1.0, 0.5);
-        auto particle3 = std::make_unique<Particle>(30.0, 20.0, 0.1, -0.1, 1.0, 0.5);
-        auto particle4 = std::make_unique<Particle>(40.0, 25.0, -0.1, -0.1, 1.0, 0.5);
-        auto particle5 = std::make_unique<Particle>(50.0, 30.0, 0.0, 0.1, 1.0, 0.5);
+        auto particle1 = std::make_unique<Particle>(10.0, 10.0, 1.0, 1.0, 1.0, 0.5);  // Faster velocities
+        auto particle2 = std::make_unique<Particle>(20.0, 15.0, -1.0, 1.0, 1.0, 0.5);
+        auto particle3 = std::make_unique<Particle>(30.0, 20.0, 1.0, -1.0, 1.0, 0.5);
+        auto particle4 = std::make_unique<Particle>(40.0, 25.0, -1.0, -1.0, 1.0, 0.5);
+        auto particle5 = std::make_unique<Particle>(50.0, 30.0, 0.0, 1.0, 1.0, 0.5);
         
         physicsEngine_->addParticle(std::move(particle1));
         physicsEngine_->addParticle(std::move(particle2));

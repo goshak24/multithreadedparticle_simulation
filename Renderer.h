@@ -64,6 +64,8 @@ public:
         }
         
         // Add some bouncing test particles to make sure we see something
+        // Removed for consistency - all particles now use physics
+        /*
         static double testX = 10.0, testY = 10.0, testVX = 0.5, testVY = 0.3;
         testX += testVX;
         testY += testVY;
@@ -91,6 +93,7 @@ public:
         if (x2 >= 0 && x2 < width_ && y2 >= 0 && y2 < height_) {
             frameBuffer_[y2][x2] = 'o';
         }
+        */
         
         auto renderEnd = std::chrono::high_resolution_clock::now();
         auto renderDuration = std::chrono::duration<double>(renderEnd - renderStart).count();

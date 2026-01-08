@@ -61,8 +61,8 @@ public:
         auto particle = std::make_unique<Particle>(
             static_cast<double>(rand() % static_cast<int>(worldWidth_)),
             static_cast<double>(rand() % static_cast<int>(worldHeight_)),
-            (rand() % 6 - 3) / 2.0,  // Small random velocity (-1.5 to 1.5)
-            (rand() % 6 - 3) / 2.0,
+            (rand() % 10 - 5),  // Larger random velocity (-5 to 5)
+            (rand() % 10 - 5),
             1.0 + (rand() % 10) / 10.0,  // Random mass
             0.5 + (rand() % 5) / 10.0    // Random radius
         );
